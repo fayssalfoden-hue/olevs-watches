@@ -26,10 +26,14 @@
 <div class="flex items-center">
 <img alt="OLEVS" class="object-contain mix-blend-multiply dark:mix-blend-screen h-28 w-28" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPbKd9lDJetl9-yBTqGhp85_BMCKdm9UFNfYeFSExtVO4pIuKHckylyze_-QPaIB2WNWSsgjn1bP0jWMMyWmrWOCLEjuN-viqmpMfY8qc1TC3DeoFDi6j1uRPy7F_67tw80vkdHZtZqBL0bqjod8b6uy1pa3dgG38lc-ezE7zDi94Ic7YtyguISxfYjmeootQFdd1F71qWZsg3UcDAvcQod5Cy3T_KbtkxlxqPPL_Ye7dkLC32row7yb3sv1XZQQbZDA">
 </div>
-<div class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 gap-16">
-<a class="text-primary dark:text-inverse-primary border-b border-primary pb-1 font-label-caps transition-colors duration-300 text-body-md" href="#top" data-nav="top">Home</a>
-<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-label-caps transition-colors duration-300 text-body-md" href="#collection" data-nav="collection">Products</a>
-<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-label-caps transition-colors duration-300 text-body-md" href="#contact" data-nav="contact">Contact</a>
+<!-- The gold rule under the active link is one element that slides between the
+     three, rather than a border switched on and off per link. Same 1px gold line
+     the design specifies — it just travels. -->
+<div class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 gap-16" id="nav-links">
+<a class="text-primary dark:text-inverse-primary pb-1 font-label-caps transition-colors duration-300 text-body-md" href="#top" data-nav="top">Home</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary pb-1 font-label-caps transition-colors duration-300 text-body-md" href="#collection" data-nav="collection">Products</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary pb-1 font-label-caps transition-colors duration-300 text-body-md" href="#contact" data-nav="contact">Contact</a>
+<span id="nav-indicator" class="absolute bottom-0 left-0 h-px bg-primary dark:bg-inverse-primary" style="width:0;transform:translateX(0);transition:transform .4s cubic-bezier(.4,0,.2,1),width .4s cubic-bezier(.4,0,.2,1);"></span>
 </div>
 <div class="flex gap-gutter items-center"><a href="login.html" class="hover:text-primary dark:hover:text-inverse-primary transition-colors duration-300 scale-95 duration-200 flex items-center" aria-label="Owner Login">
 <span class="material-symbols-outlined text-primary dark:text-inverse-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 0;">person</span>
@@ -131,11 +135,38 @@
   var status = document.getElementById('grid-status');
   var byId = {};          // product id -> product row, for the cart handlers
 
-  // ---------------------------------------------------------- nav scrolling
+  // ------------------------------------------- nav scrolling + sliding rule
+  var navBar = document.querySelector('nav');
+  var navLinkBox = document.getElementById('nav-links');
+  var navIndicator = document.getElementById('nav-indicator');
+  var navLinks = [].slice.call(navLinkBox.querySelectorAll('[data-nav]'));
+
+  var ACTIVE = ['text-primary', 'dark:text-inverse-primary'];
+  var IDLE = ['text-on-surface-variant', 'dark:text-surface-variant',
+              'hover:text-primary', 'dark:hover:text-inverse-primary'];
+
+  function setActive(name) {
+    var target = null;
+    navLinks.forEach(function (a) {
+      var on = a.getAttribute('data-nav') === name;
+      if (on) target = a;
+      ACTIVE.forEach(function (c) { a.classList.toggle(c, on); });
+      IDLE.forEach(function (c) { a.classList.toggle(c, !on); });
+    });
+    if (!target) return;
+
+    /* Measured, not hard-coded. The three labels are different widths and the
+       webfont lands after first paint, so any fixed offset would be right only
+       until Hanken Grotesk finished loading. */
+    navIndicator.style.width = target.offsetWidth + 'px';
+    navIndicator.style.transform = 'translateX(' + target.offsetLeft + 'px)';
+  }
+
   document.querySelectorAll('[data-nav]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
       var target = a.getAttribute('data-nav');
+      setActive(target);                       // the rule moves on the click...
       if (target === 'top') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
@@ -144,6 +175,32 @@
       }
     });
   });
+
+  /* ...and keeps telling the truth afterwards. An indicator that stays under
+     "Home" while the reader has scrolled down to Contact is a label pointing at
+     the wrong place, so scrolling moves it too. */
+  function sectionInView() {
+    var probe = window.scrollY + (navBar ? navBar.offsetHeight : 0) + 12;
+    var collection = document.getElementById('collection');
+    var contact = document.getElementById('contact');
+    var atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 2;
+    if (atBottom || probe >= contact.offsetTop) return 'contact';
+    if (probe >= collection.offsetTop) return 'collection';
+    return 'top';
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { setActive(sectionInView()); ticking = false; });
+  }, { passive: true });
+
+  window.addEventListener('resize', function () { setActive(sectionInView()); });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { setActive(sectionInView()); });
+  }
+  setActive('top');
 
   // ------------------------------------------------------------ product grid
   //
