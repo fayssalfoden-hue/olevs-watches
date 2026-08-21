@@ -303,9 +303,12 @@
       '<div class="col-span-3 font-body-md text-body-md text-on-background">' + esc(p.description || '—') + '</div>' +
       '<div class="col-span-2 text-right font-price-display text-price-display text-primary">' + fmtDA(p.price) + '</div>' +
       '<div class="col-span-2 text-right">' + stockPill(Number(p.stock_quantity)) + '</div>' +
-      '<div class="col-span-1 flex justify-end relative group/menu">' +
-        '<button class="p-2 hover:bg-primary-container/10 rounded-full transition-colors text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>' +
-        '<div class="absolute right-0 top-full mt-1 w-48 bg-surface-container-lowest border border-outline-variant/30 rounded-lg shadow-lg hidden group-hover/menu:block z-50 overflow-hidden">' +
+      /* No `mt-1` on the panel: a 4px gap between the button and the menu is a
+         dead strip the pointer must cross, and crossing it used to close the
+         menu. The panel now starts exactly where the button ends. */
+      '<div class="col-span-1 flex justify-end relative" data-menu>' +
+        '<button type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" class="p-2 hover:bg-primary-container/10 rounded-full transition-colors text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>' +
+        '<div data-menu-panel class="absolute right-0 top-full w-48 bg-surface-container-lowest border border-outline-variant/30 rounded-lg shadow-lg hidden z-50 overflow-hidden">' +
           '<button data-edit="' + esc(p.id) + '" class="w-full text-left px-4 py-3 font-label-caps text-label-caps text-on-surface hover:bg-primary-container/10 transition-colors flex items-center gap-2">' +
             '<span class="material-symbols-outlined text-primary" style="font-size: 18px">edit</span>Edit</button>' +
           '<button data-delete="' + esc(p.id) + '" class="w-full text-left px-4 py-3 font-label-caps text-label-caps text-error hover:bg-error/5 transition-colors flex items-center gap-2 border-t border-outline-variant/10">' +
@@ -319,17 +322,84 @@
       var s = $('products-status');
       if (r.error) { s.textContent = 'Inventory could not be loaded: ' + r.error.message; return; }
       products = r.data || [];
+      // Re-rendering replaces the row markup, so any menu that was open is now
+      // a detached node. Drop the reference rather than leave a stale one that
+      // would make the next open think another menu is still showing.
+      clearTimeout(closeTimer);
+      openMenu = null;
+      pinned = false;
       $('product-rows').innerHTML = products.map(rowHtml).join('');
       s.classList.toggle('hidden', products.length > 0);
       if (!products.length) s.textContent = 'No products yet. Use “Add New Product” to list your first piece.';
     });
   }
 
-  $('product-rows').addEventListener('click', function (e) {
+  // ------------------------------------------------------- row action menu
+  //
+  // Hover alone was too unforgiving: the menu closed the moment the pointer
+  // left the button, so reaching Edit or Delete meant crossing a gap that
+  // dismissed the thing you were aiming at. Three changes fix that — the panel
+  // is flush against the button (above), leaving is forgiven for GRACE_MS, and
+  // a click pins the menu open so it does not depend on a steady hand at all.
+  var GRACE_MS = 600;
+  var openMenu = null, pinned = false, closeTimer = null;
+
+  function showMenu(menu) {
+    clearTimeout(closeTimer);
+    if (openMenu && openMenu !== menu) closeMenu(true);
+    openMenu = menu;
+    menu.querySelector('[data-menu-panel]').classList.remove('hidden');
+    menu.querySelector('[data-menu-trigger]').setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu(force) {
+    if (!openMenu || (pinned && !force)) return;
+    openMenu.querySelector('[data-menu-panel]').classList.add('hidden');
+    openMenu.querySelector('[data-menu-trigger]').setAttribute('aria-expanded', 'false');
+    openMenu = null;
+    pinned = false;
+  }
+
+  function scheduleClose() {
+    clearTimeout(closeTimer);
+    if (pinned) return;                       // a pinned menu waits for a click
+    closeTimer = setTimeout(function () { closeMenu(false); }, GRACE_MS);
+  }
+
+  var rowsEl = $('product-rows');
+
+  rowsEl.addEventListener('mouseover', function (e) {
+    var menu = e.target.closest('[data-menu]');
+    if (menu) showMenu(menu);
+  });
+
+  rowsEl.addEventListener('mouseout', function (e) {
+    var menu = e.target.closest('[data-menu]');
+    if (!menu) return;
+    // Moving between the button and the panel fires mouseout too; only start
+    // the timer when the pointer has genuinely left the whole group.
+    if (e.relatedTarget && menu.contains(e.relatedTarget)) return;
+    scheduleClose();
+  });
+
+  rowsEl.addEventListener('click', function (e) {
+    var trigger = e.target.closest('[data-menu-trigger]');
+    if (trigger) {
+      e.stopPropagation();
+      var menu = trigger.closest('[data-menu]');
+      if (openMenu === menu && pinned) { pinned = false; closeMenu(true); }
+      else { showMenu(menu); pinned = true; }
+      return;
+    }
+
     var ed = e.target.closest('[data-edit]'), del = e.target.closest('[data-delete]');
+    if (ed || del) closeMenu(true);           // the menu's job is done
     if (ed) openModal(products.filter(function (p) { return p.id === ed.getAttribute('data-edit'); })[0]);
     else if (del) deleteProduct(del.getAttribute('data-delete'));
   });
+
+  document.addEventListener('click', function () { closeMenu(true); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(true); });
 
   function deleteProduct(id) {
     var p = products.filter(function (x) { return x.id === id; })[0];
