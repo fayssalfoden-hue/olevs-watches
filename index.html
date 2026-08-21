@@ -9,6 +9,15 @@
 <style>
   /* The nav is fixed at h-32, so an anchored section must stop clear of it. */
   #collection, #contact { scroll-margin-top: 8rem; }
+
+  /* The cart drawer is parked off-canvas with translate-x-full so it can slide
+     in. Parked, it still sits to the right of the viewport and lengthens the
+     document — measured at 458px against a 414px screen, which on a phone reads
+     as the whole page being draggable sideways. `clip` removes that scrollable
+     overflow; `hidden` would do it too but also silently kills position:sticky,
+     which the checkout's order summary depends on, so the two pages would then
+     disagree about which is safe to copy. */
+  html { overflow-x: clip; }
 </style>
 </head>
 <body class="bg-surface text-on-surface font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
