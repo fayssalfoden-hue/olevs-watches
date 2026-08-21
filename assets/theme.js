@@ -155,18 +155,20 @@ tailwind.config = {
                               }
                       ]
               }
+              ,
+              /* The dashboard inventory table is laid out on a THIRTEEN column
+                 grid: image 1 + name 4 + description 3 + price 2 + stock 2 +
+                 actions 1 = 13. Tailwind's default gridTemplateColumns scale
+                 stops at 12, so `grid-cols-13` as written in the supplied
+                 screen emitted no rule at all — the browser auto-fitted four
+                 columns and the six cells wrapped onto separate lines, which is
+                 why every product rendered as a tall stack instead of a table
+                 row. This must live INSIDE the assigned object: the Play CDN
+                 normalises tailwind.config on assignment, so mutating a nested
+                 property afterwards is silently discarded. */
+              "gridTemplateColumns": {
+                      "13": "repeat(13, minmax(0, 1fr))"
+              }
       },
           },
         }
-
-/* The dashboard's inventory table is laid out on a THIRTEEN column grid:
-   image 1 + name 4 + description 3 + price 2 + stock 2 + actions 1 = 13.
-   Tailwind's default gridTemplateColumns scale stops at 12, so `grid-cols-13`
-   as written in the supplied screen emits no rule at all — the browser then
-   auto-fits four columns and the six cells wrap onto separate lines, which is
-   why every product rendered as a tall stack instead of a table row.
-   Registering the scale value restores the layout the design intended without
-   touching a single class in the markup. */
-tailwind.config.theme.extend.gridTemplateColumns = {
-  '13': 'repeat(13, minmax(0, 1fr))',
-};
