@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>OLEVS HOROLOGY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config" src="assets/theme.js"></script>
+<style>
+  /* The nav is fixed at h-32, so an anchored section must stop clear of it. */
+  #collection, #contact { scroll-margin-top: 8rem; }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop bg-surface/90 backdrop-blur-md dark:bg-inverse-surface/90 shadow-sm h-32">
+<div class="flex items-center">
+<img alt="OLEVS" class="object-contain mix-blend-multiply dark:mix-blend-screen h-28 w-28" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPbKd9lDJetl9-yBTqGhp85_BMCKdm9UFNfYeFSExtVO4pIuKHckylyze_-QPaIB2WNWSsgjn1bP0jWMMyWmrWOCLEjuN-viqmpMfY8qc1TC3DeoFDi6j1uRPy7F_67tw80vkdHZtZqBL0bqjod8b6uy1pa3dgG38lc-ezE7zDi94Ic7YtyguISxfYjmeootQFdd1F71qWZsg3UcDAvcQod5Cy3T_KbtkxlxqPPL_Ye7dkLC32row7yb3sv1XZQQbZDA">
+</div>
+<div class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 gap-16">
+<a class="text-primary dark:text-inverse-primary border-b border-primary pb-1 font-label-caps transition-colors duration-300 text-body-md" href="#top" data-nav="top">Home</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-label-caps transition-colors duration-300 text-body-md" href="#collection" data-nav="collection">Products</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-label-caps transition-colors duration-300 text-body-md" href="#contact" data-nav="contact">Contact</a>
+</div>
+<div class="flex gap-gutter items-center"><a href="login.html" class="hover:text-primary dark:hover:text-inverse-primary transition-colors duration-300 scale-95 duration-200 flex items-center" aria-label="Owner Login">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 0;">person</span>
+</a>
+<button id="cart-open" aria-label="Open cart" class="hover:text-primary dark:hover:text-inverse-primary transition-colors duration-300 scale-95 duration-200 relative">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 0;">shopping_bag</span>
+<span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full items-center justify-center font-bold">0</span>
+</button>
+</div>
+</nav>
+<main class="pt-32" id="top">
+<!-- Hero Section -->
+<section class="w-full min-h-[90vh] flex flex-col md:flex-row items-center px-margin-mobile md:px-margin-desktop gap-gutter py-section-gap">
+<div class="w-full md:w-5/12 flex flex-col justify-center gap-6">
+<h1 class="font-display-lg text-display-lg text-on-surface">Timeless Craftsmanship,<br>Handmade for You</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">Discover the pinnacle of horological excellence. Each piece is a testament to precision, legacy, and understated luxury, crafted for the discerning connoisseur.</p>
+<div class="pt-4">
+<a class="inline-block border border-primary text-primary font-label-caps text-label-caps uppercase py-4 px-8 hover:bg-[#F2EADA] transition-colors duration-300" href="#collection" data-nav="collection">Explore Collection</a>
+</div>
+</div>
+<div class="w-full md:w-7/12 h-[60vh] md:h-[80vh] relative">
+<div class="absolute inset-0 bg-primary/5 -translate-x-4 translate-y-4"></div>
+<img class="w-full h-full object-cover relative z-10 border border-primary/20" data-alt="A close-up, high-end editorial photograph of a luxury handmade watch resting on a minimalist marble block." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl0vlJzQevrb2hLySyOs3AGpPYs2ttGT3yx5kPlv5HQtGk4n_ymquSXg1gXt9O3eKvU_WM6RWgzM9NqRUtFFf0M-GAPda8YYhqpJJIv0Tn_ndVCcByYEZdq464poevdaAdictsDqjpi1YE1f7-Zm-PvS28xc3xR1eJSuKRO5VZp39FXftK3AYX2M5JVFFwncGm6GfoEK6ktREw7WSHW-ACaF1wkq5HaulrBSU7zHQ5GZgC-wJQF1KRDFCgOgEhn-WboQ">
+</div>
+</section>
+<!-- Our Collection Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap" id="collection">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-on-surface md:font-headline-lg-mobile md:text-headline-lg-mobile">Our Collection</h2>
+<div class="w-12 h-[1px] bg-primary mx-auto mt-4"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter" id="product-grid">
+<!-- Product cards are rendered here from the watch_products table -->
+</div>
+<p id="grid-status" class="text-center font-body-md text-body-md text-on-surface-variant py-16">Loading the collection…</p>
+</section>
+<!-- Contact Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col items-center text-center bg-surface-container-low" id="contact">
+<h2 class="font-headline-lg text-headline-lg text-on-surface md:font-headline-lg-mobile md:text-headline-lg-mobile mb-6">Visit Our Atelier</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg mx-auto mb-12">Experience the weight of time in your hands. Contact us to arrange a private viewing or discuss a bespoke commission.</p>
+<div class="flex flex-col md:flex-row gap-16 md:gap-32">
+<div class="flex flex-col items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl font-light">mail</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">inquiries@olevs.com</p>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl font-light">location_on</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">14 Rue de la Paix,<br>Algiers, Algeria</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-desktop flex flex-col items-center gap-unit text-center bg-surface dark:bg-inverse-surface border-t border-outline-variant fade-in duration-500">
+<div class="mb-8">
+<img alt="OLEVS" class="h-24 w-24 object-contain mx-auto mb-4 mix-blend-multiply dark:mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPbKd9lDJetl9-yBTqGhp85_BMCKdm9UFNfYeFSExtVO4pIuKHckylyze_-QPaIB2WNWSsgjn1bP0jWMMyWmrWOCLEjuN-viqmpMfY8qc1TC3DeoFDi6j1uRPy7F_67tw80vkdHZtZqBL0bqjod8b6uy1pa3dgG38lc-ezE7zDi94Ic7YtyguISxfYjmeootQFdd1F71qWZsg3UcDAvcQod5Cy3T_KbtkxlxqPPL_Ye7dkLC32row7yb3sv1XZQQbZDA">
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2 tracking-widest">Crafted with passion, worn with pride.</p>
+</div>
+<div class="flex gap-8 mb-12">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Terms of Service</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Shipping Info</a>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">© 2024 OLEVS HOROLOGY. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<!-- Cart Drawer — built in the sheet's own language: cream surface, 1px gold
+     rules, sharp corners, label-caps controls. No new colours are introduced. -->
+<div id="cart-scrim" class="fixed inset-0 bg-inverse-surface/30 backdrop-blur-[2px] z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+<aside id="cart-drawer" role="dialog" aria-label="Your selection" aria-modal="true"
+       class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-surface border-l border-primary/20 z-[70] translate-x-full transition-transform duration-300 flex flex-col">
+  <div class="flex items-center justify-between px-8 h-32 border-b border-outline-variant/40 shrink-0">
+    <h2 class="font-headline-md text-headline-md text-on-surface">Your Selection</h2>
+    <button id="cart-close" aria-label="Close cart" class="text-primary hover:opacity-70 transition-opacity">
+      <span class="material-symbols-outlined text-3xl">close</span>
+    </button>
+  </div>
+  <div id="cart-lines" class="flex-grow overflow-y-auto px-8 py-6 flex flex-col gap-6"></div>
+  <div class="border-t border-primary/30 px-8 py-6 flex flex-col gap-6 shrink-0">
+    <div class="flex justify-between items-center">
+      <span class="font-label-caps text-label-caps text-on-surface uppercase tracking-widest">Subtotal</span>
+      <span id="cart-subtotal" class="font-price-display text-price-display text-on-surface">0 DA</span>
+    </div>
+    <p class="font-body-md text-on-surface-variant text-sm -mt-3">Delivery is calculated at checkout.</p>
+    <a id="cart-checkout" href="checkout.html"
+       class="w-full text-center border border-primary text-primary font-label-caps text-label-caps uppercase py-4 hover:bg-[#F2EADA] transition-colors duration-300">
+       Proceed to Checkout</a>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function () {
+  'use strict';
+  var Cart = OLEVS.Cart, fmtDA = OLEVS.fmtDA, esc = OLEVS.escapeHtml;
+  var grid = document.getElementById('product-grid');
+  var status = document.getElementById('grid-status');
+  var byId = {};          // product id -> product row, for the cart handlers
+
+  // ---------------------------------------------------------- nav scrolling
+  document.querySelectorAll('[data-nav]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = a.getAttribute('data-nav');
+      if (target === 'top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        var el = document.getElementById(target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ------------------------------------------------------------ product grid
+  //
+  // The design staggers every second card down by md:mt-12. That rhythm is a
+  // property of the card's position in the grid, so it is applied by index here
+  // exactly as the static design applied it by hand.
+  function cardHtml(p, index) {
+    var offset = (index % 2 === 1) ? ' md:mt-12' : '';
+    var inStock = Number(p.stock_quantity) > 0;
+    var actions = inStock
+      ? '<button data-buy="' + esc(p.id) + '" class="w-full border border-primary text-primary font-label-caps text-label-caps uppercase py-3 hover:bg-[#F2EADA] transition-colors duration-300">Buy Now</button>' +
+        '<button data-add="' + esc(p.id) + '" class="w-full text-on-surface-variant font-label-caps text-label-caps uppercase py-3 hover:text-primary transition-colors duration-300 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> Add to Cart</button>'
+      : '<button disabled class="w-full border border-outline-variant text-outline font-label-caps text-label-caps uppercase py-3 cursor-not-allowed">Out of Stock</button>' +
+        '<span class="w-full font-label-caps text-label-caps uppercase py-3 text-center text-outline">Currently unavailable</span>';
+
+    return '<div class="group flex flex-col gap-4' + offset + '">' +
+      '<div class="w-full aspect-[4/5] relative overflow-hidden bg-surface-container-low">' +
+        '<img alt="' + esc(p.name) + '" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105' +
+        (inStock ? '' : ' opacity-40') + '" src="' + esc(OLEVS.imgFor(p)) + '">' +
+        (inStock ? '' : '<span class="absolute top-4 left-4 bg-surface/90 border border-outline-variant text-on-surface-variant font-label-caps text-label-caps uppercase px-3 py-1">Out of Stock</span>') +
+      '</div>' +
+      '<div class="text-center">' +
+        '<h3 class="font-headline-md text-headline-md text-on-surface mb-1 text-[22px]">' + esc(p.name) + '</h3>' +
+        '<p class="font-price-display text-price-display text-on-surface-variant mb-6">' + fmtDA(p.price) + '</p>' +
+        '<div class="flex flex-col gap-3 px-4">' + actions + '</div>' +
+      '</div></div>';
+  }
+
+  function loadProducts() {
+    OLEVS.sb.from(OLEVS_CONFIG.TABLE_PRODUCTS)
+      .select('id,name,price,description,image_url,stock_quantity')
+      .order('created_at', { ascending: true })
+      .then(function (res) {
+        if (res.error) {
+          status.textContent = 'The collection could not be loaded: ' + res.error.message;
+          return;
+        }
+        var rows = res.data || [];
+        if (!rows.length) {
+          status.textContent = 'No pieces are listed yet.';
+          return;
+        }
+        status.classList.add('hidden');
+        byId = {};
+        rows.forEach(function (p) { byId[p.id] = p; });
+        grid.innerHTML = rows.map(cardHtml).join('');
+      });
+  }
+
+  grid.addEventListener('click', function (e) {
+    var buy = e.target.closest('[data-buy]');
+    var add = e.target.closest('[data-add]');
+    if (buy) {
+      Cart.buyNow(byId[buy.getAttribute('data-buy')], 1);
+      window.location.href = 'checkout.html';
+    } else if (add) {
+      Cart.add(byId[add.getAttribute('data-add')], 1);
+      openDrawer();
+    }
+  });
+
+  // ------------------------------------------------------------- cart drawer
+  var drawer = document.getElementById('cart-drawer');
+  var scrim = document.getElementById('cart-scrim');
+  var lines = document.getElementById('cart-lines');
+
+  function openDrawer() {
+    scrim.classList.remove('hidden');
+    requestAnimationFrame(function () { scrim.classList.remove('opacity-0'); });
+    drawer.classList.remove('translate-x-full');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    scrim.classList.add('opacity-0');
+    drawer.classList.add('translate-x-full');
+    document.body.style.overflow = '';
+    setTimeout(function () { scrim.classList.add('hidden'); }, 300);
+  }
+  document.getElementById('cart-open').addEventListener('click', openDrawer);
+  document.getElementById('cart-close').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+
+  function renderCart() {
+    var items = Cart.items();
+    var badge = document.getElementById('cart-badge');
+    var n = Cart.count();
+    badge.textContent = n;
+    badge.classList.toggle('hidden', n === 0);
+    badge.classList.toggle('flex', n > 0);
+
+    document.getElementById('cart-subtotal').textContent = fmtDA(Cart.subtotal());
+    var checkout = document.getElementById('cart-checkout');
+    checkout.classList.toggle('pointer-events-none', n === 0);
+    checkout.classList.toggle('opacity-40', n === 0);
+
+    if (!items.length) {
+      lines.innerHTML = '<p class="font-body-md text-on-surface-variant text-center py-12">Your selection is empty.</p>';
+      return;
+    }
+    lines.innerHTML = items.map(function (it) {
+      return '<div class="flex gap-4 pb-6 border-b border-outline-variant/30 last:border-0">' +
+        '<div class="w-20 h-24 bg-surface-container-low overflow-hidden shrink-0">' +
+          '<img class="w-full h-full object-cover" alt="' + esc(it.product_name) + '" src="' + esc(it.image_url || OLEVS.imgFor(null)) + '">' +
+        '</div>' +
+        '<div class="flex-grow flex flex-col">' +
+          '<h3 class="font-headline-md text-[18px] text-on-surface">' + esc(it.product_name) + '</h3>' +
+          '<p class="font-price-display text-on-surface-variant text-[16px] mb-3">' + fmtDA(it.price) + '</p>' +
+          '<div class="flex items-center gap-3 mt-auto">' +
+            '<button data-dec="' + esc(it.product_id) + '" aria-label="Decrease" class="w-8 h-8 border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors">−</button>' +
+            '<span class="font-label-caps text-label-caps w-6 text-center">' + it.quantity + '</span>' +
+            '<button data-inc="' + esc(it.product_id) + '" aria-label="Increase" class="w-8 h-8 border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors">+</button>' +
+            '<button data-del="' + esc(it.product_id) + '" class="ml-auto font-label-caps text-label-caps uppercase text-outline hover:text-error transition-colors">Remove</button>' +
+          '</div>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  lines.addEventListener('click', function (e) {
+    var inc = e.target.closest('[data-inc]'), dec = e.target.closest('[data-dec]'), del = e.target.closest('[data-del]');
+    var items = Cart.items();
+    function qtyOf(id) { var f = items.filter(function (i) { return i.product_id === id; })[0]; return f ? f.quantity : 0; }
+    if (inc) Cart.setQty(inc.getAttribute('data-inc'), qtyOf(inc.getAttribute('data-inc')) + 1);
+    else if (dec) Cart.setQty(dec.getAttribute('data-dec'), qtyOf(dec.getAttribute('data-dec')) - 1);
+    else if (del) Cart.remove(del.getAttribute('data-del'));
+  });
+
+  document.addEventListener('cart:changed', renderCart);
+  renderCart();
+  loadProducts();
+})();
+</script>
+</body></html>

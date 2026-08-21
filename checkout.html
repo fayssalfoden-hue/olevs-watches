@@ -1,0 +1,287 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AETERNUS - Secure Checkout</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config" src="assets/theme.js"></script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); -webkit-font-smoothing: antialiased; }
+        .lux-border-bottom { border-bottom: 1px solid theme('colors.primary'); }
+        .lux-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid theme('colors.primary');
+            padding: theme('spacing.unit') 0;
+            color: theme('colors.on-surface');
+            font-family: theme('fontFamily.body-md');
+            font-size: theme('fontSize.body-md')[0];
+            outline: none;
+            border-radius: 0;
+        }
+        .lux-input:focus { border-bottom-width: 2px; border-color: theme('colors.on-primary-container'); }
+        .lux-input::placeholder { color: theme('colors.outline'); }
+        .lux-input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .lux-btn {
+            display: inline-block;
+            text-align: center;
+            border: 1px solid theme('colors.primary');
+            color: theme('colors.primary');
+            padding: theme('spacing.gutter') theme('spacing.margin-desktop');
+            transition: all 0.3s ease;
+            background: transparent;
+            cursor: pointer;
+        }
+        .lux-btn:hover { background-color: #F2EADA; color: theme('colors.on-primary-container'); }
+        .lux-btn:disabled { opacity: 0.45; cursor: not-allowed; background: transparent; }
+        .radio-custom:checked + div { border-color: theme('colors.primary'); background-color: rgba(197, 163, 101, 0.05); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pt-20">
+<!-- TopNavBar (Transactional, suppressed links) -->
+<nav class="bg-surface/90 backdrop-blur-md dark:bg-inverse-surface/90 text-primary dark:text-inverse-primary border-b border-outline-variant/30 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20">
+<div class="flex-1 flex items-center">
+<a href="index.html" aria-label="Back to the collection"><span class="material-symbols-outlined hover:text-primary transition-colors cursor-pointer text-2xl" data-icon="arrow_back">arrow_back</span></a>
+</div>
+<div class="flex-1 text-center flex justify-center">
+<img alt="AETERNUS" class="h-16 w-auto mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqOxvG0KqGYnFserazDZs1owACjmWTKlcuuZNAfFpqaR5N2WFP5MczgVQZCuBsgN6DnVzh2sj3w6rN4tKl8I8RCpaN3sw9XMByV2u6QTnxw6TQPAIXlqd_I9slBQifxKRcgHF05dDjGqTM88QK-ChMPd95ogbPcxRojGXsdLzJSn0aIfYDij4AcOA3nGVPT9Sn0QE07NNhciDcWl9zFLwG0GTjNXS73Co4RNhkFe2nvrReZ4VWkMqNvngF6VTMZ9JHEA" style="object-fit: contain;">
+</div>
+<div class="flex-1 flex justify-end">
+</div>
+</nav>
+<main class="flex-grow container mx-auto max-w-container-max px-margin-mobile md:px-margin-desktop py-16 md:py-24 flex flex-col lg:flex-row gap-section-gap">
+<!-- Left Column: Checkout Form -->
+<section class="w-full lg:w-7/12 flex flex-col gap-16">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8">Secure Checkout</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg">Please provide your details to complete the acquisition of your timepiece. Our concierge will contact you to confirm delivery.</p>
+</div>
+
+<!-- Confirmation, shown in place of the form once the order is stored -->
+<div id="confirmation" class="hidden border border-primary/30 bg-surface-container-lowest p-8 flex flex-col gap-4 items-start">
+  <span class="material-symbols-outlined text-primary text-4xl">check_circle</span>
+  <h2 class="font-headline-md text-headline-md text-on-surface">Thank you! Your order has been received. We will contact you shortly to confirm delivery.</h2>
+  <p id="confirmation-ref" class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest"></p>
+  <a href="index.html" class="lux-btn font-label-caps text-label-caps mt-4 tracking-[0.2em] uppercase !py-4 !px-8">Return to the Collection</a>
+</div>
+
+<form class="flex flex-col gap-12" id="order-form" novalidate>
+<!-- Client Information -->
+<div class="flex flex-col gap-8"><h2 class="font-label-caps text-label-caps text-primary tracking-widest uppercase lux-border-bottom pb-2 mb-4">Client Information</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10"><div class="flex flex-col"><label class="font-label-caps text-label-caps text-on-surface-variant mb-2" for="fullName">Full Name</label><input class="lux-input" id="fullName" placeholder="" type="text" required></div><div class="flex flex-col"><label class="font-label-caps text-label-caps text-on-surface-variant mb-2" for="phone">Phone Number</label><input class="lux-input" id="phone" placeholder="" type="tel" required></div><div class="flex flex-col"><label class="font-label-caps text-label-caps text-on-surface-variant mb-2" for="state">State / Wilaya</label><div class="relative"><select class="lux-input appearance-none cursor-pointer pr-8" id="state" required><option value="" disabled selected>Select a wilaya</option></select><span class="material-symbols-outlined absolute right-0 bottom-2 pointer-events-none text-primary">expand_more</span></div></div><div class="flex flex-col"><label class="font-label-caps text-label-caps text-on-surface-variant mb-2" for="region">Region / Commune</label><div class="relative"><select class="lux-input appearance-none cursor-pointer pr-8" id="region" required disabled><option value="" disabled selected>Select a wilaya first</option></select><span class="material-symbols-outlined absolute right-0 bottom-2 pointer-events-none text-primary">expand_more</span></div></div></div></div>
+<!-- Delivery Options -->
+<div class="flex flex-col gap-8"><h2 class="font-label-caps text-label-caps text-primary tracking-widest uppercase lux-border-bottom pb-2 mb-4">Delivery Preference</h2><div class="flex flex-col"><label class="font-label-caps text-label-caps text-on-surface-variant mb-2" for="delivery">Select Delivery Preference</label><div class="relative"><select id="delivery" class="lux-input appearance-none bg-transparent cursor-pointer pr-8" required><option value="" disabled selected>Select an option</option><option value="office">Office / Stopdesk Pickup</option><option value="home">Home Delivery</option></select><span class="material-symbols-outlined absolute right-0 bottom-2 pointer-events-none text-primary">expand_more</span></div></div></div>
+<p id="form-error" class="hidden font-body-md text-body-md text-error"></p>
+<div class="mt-8">
+<button class="lux-btn font-label-caps text-label-caps w-full tracking-[0.2em] uppercase" type="submit" id="confirm-btn">Confirm Acquisition</button>
+</div>
+</form>
+</section>
+<!-- Right Column: Order Summary (Sticky) -->
+<aside class="w-full lg:w-5/12">
+<div class="sticky top-32 bg-surface-container-lowest border border-primary/20 p-8 flex flex-col gap-8 shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface text-center mb-4">Order Summary</h2>
+<div id="summary-items" class="flex flex-col gap-6 pb-8 border-b border-outline-variant/30"></div>
+<div class="flex flex-col gap-4 text-sm font-body-md text-on-surface-variant">
+<div class="flex justify-between">
+<span class="">Subtotal</span>
+<span class="" id="summary-subtotal">0 DA</span>
+</div>
+<div class="flex justify-between">
+<span class="" id="summary-delivery-label">Delivery</span>
+<span class="" id="summary-delivery">—</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-8 border-t border-primary/30 mt-4">
+<span class="font-label-caps text-label-caps text-on-surface uppercase tracking-widest">Total</span>
+<span class="font-headline-md text-headline-md text-primary" id="summary-total">0 DA</span>
+</div>
+<div class="flex items-center justify-center gap-2 mt-4 text-primary/70">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+<span class="font-label-caps text-[10px] uppercase tracking-widest">Secure Encrypted Transaction</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-desktop flex flex-col items-center gap-unit text-center bg-surface dark:bg-inverse-surface border-t border-outline-variant mt-auto">
+<div class="font-headline-lg text-headline-lg text-primary mb-6 text-center">AETERNUS</div>
+<nav class="flex gap-8 mb-8">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Terms of Service</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-primary/30 transition-colors" href="#">Shipping Info</a>
+</nav>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm opacity-70">© 2024 AETERNUS HOROLOGY. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/algeria.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function () {
+  'use strict';
+  var Cart = OLEVS.Cart, fmtDA = OLEVS.fmtDA, esc = OLEVS.escapeHtml;
+  var fees = null;                        // { home: {fee,label}, office: {fee,label} }
+  var items = Cart.items();
+
+  var $ = function (id) { return document.getElementById(id); };
+  var elState = $('state'), elRegion = $('region'), elDelivery = $('delivery');
+
+  // ------------------------------------------------- wilaya / commune cascade
+  //
+  // 58 wilayas and 1,541 communes, from the dataset in assets/algeria.js.
+  // The commune list is rebuilt from the selected wilaya and nothing else, so a
+  // commune from a previously chosen wilaya can never survive into the order.
+  (function fillWilayas() {
+    var frag = document.createDocumentFragment();
+    (window.ALGERIA_WILAYAS || []).forEach(function (w) {
+      var o = document.createElement('option');
+      o.value = w.name;
+      o.dataset.code = w.code;
+      o.textContent = w.code + ' — ' + w.name;
+      frag.appendChild(o);
+    });
+    elState.appendChild(frag);
+  })();
+
+  elState.addEventListener('change', function () {
+    var w = (window.ALGERIA_WILAYAS || []).filter(function (x) { return x.name === elState.value; })[0];
+    elRegion.innerHTML = '';
+    if (!w) {
+      elRegion.disabled = true;
+      elRegion.innerHTML = '<option value="" disabled selected>Select a wilaya first</option>';
+      return;
+    }
+    var ph = document.createElement('option');
+    ph.value = ''; ph.disabled = true; ph.selected = true;
+    ph.textContent = 'Select a commune (' + w.communes.length + ')';
+    elRegion.appendChild(ph);
+    w.communes.forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      elRegion.appendChild(o);
+    });
+    elRegion.disabled = false;
+  });
+
+  // ----------------------------------------------------------- order summary
+  function renderSummary() {
+    var box = $('summary-items');
+    if (!items.length) {
+      box.innerHTML = '<p class="font-body-md text-on-surface-variant text-center">Your selection is empty. <a class="text-primary underline" href="index.html">Browse the collection</a>.</p>';
+    } else {
+      box.innerHTML = items.map(function (it) {
+        return '<div class="flex items-center gap-6">' +
+          '<div class="w-1/3 aspect-square bg-surface-container-low flex items-center justify-center overflow-hidden mix-blend-multiply">' +
+            '<img alt="' + esc(it.product_name) + '" class="w-full h-full object-cover mix-blend-multiply hover:scale-105 transition-transform duration-700 ease-out" src="' + esc(it.image_url || OLEVS.imgFor(null)) + '">' +
+          '</div>' +
+          '<div class="w-2/3 flex flex-col">' +
+            '<span class="font-label-caps text-label-caps text-primary tracking-widest mb-1">AETERNUS</span>' +
+            '<h3 class="font-body-lg text-body-lg text-on-surface font-medium mb-2">' + esc(it.product_name) + '</h3>' +
+            '<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-4">Quantity ' + it.quantity + ' × ' + fmtDA(it.price) + '</p>' +
+            '<span class="font-price-display text-price-display text-on-surface">' + fmtDA(it.price * it.quantity) + '</span>' +
+          '</div></div>';
+      }).join('');
+    }
+    recalc();
+  }
+
+  /* Live total. The delivery line stays an em dash until a method is chosen —
+     showing a fee before the customer has picked one would be inventing a number
+     on their behalf. */
+  function recalc() {
+    var subtotal = items.reduce(function (a, it) { return a + it.price * it.quantity; }, 0);
+    $('summary-subtotal').textContent = fmtDA(subtotal);
+
+    var method = elDelivery.value;
+    var fee = (fees && method && fees[method]) ? fees[method].fee : null;
+
+    $('summary-delivery-label').textContent =
+      (fees && method && fees[method]) ? fees[method].label : 'Delivery';
+    $('summary-delivery').textContent = (fee === null) ? '—' : fmtDA(fee);
+    $('summary-total').textContent = fmtDA(subtotal + (fee || 0));
+  }
+
+  elDelivery.addEventListener('change', recalc);
+
+  // ---------------------------------------------------------------- submit
+  function fail(msg) {
+    var e = $('form-error');
+    e.textContent = msg;
+    e.classList.remove('hidden');
+    e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  $('order-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    $('form-error').classList.add('hidden');
+
+    if (!items.length) return fail('Your selection is empty.');
+    var name = $('fullName').value.trim();
+    var phone = $('phone').value.trim();
+    if (!name) return fail('Please enter your full name.');
+    if (!/^[0-9+\s().-]{6,}$/.test(phone)) return fail('Please enter a valid phone number.');
+    if (!elState.value) return fail('Please select your wilaya.');
+    if (!elRegion.value) return fail('Please select your commune.');
+    if (!elDelivery.value) return fail('Please choose a delivery preference.');
+    if (!fees) return fail('Delivery fees could not be loaded. Please reload the page.');
+
+    var btn = $('confirm-btn');
+    btn.disabled = true;
+    btn.textContent = 'Placing your order…';
+
+    var subtotal = items.reduce(function (a, it) { return a + it.price * it.quantity; }, 0);
+    var fee = fees[elDelivery.value].fee;
+
+    /* The money columns are sent for completeness but the database recomputes
+       every one of them from the products table before storing the row — see
+       watch_normalise_order() in supabase/schema.sql. A price edited in the
+       browser therefore cannot become a price in the order book. */
+    OLEVS.sb.from(OLEVS_CONFIG.TABLE_ORDERS).insert({
+      customer_name: name,
+      phone: phone,
+      wilaya: elState.value,
+      commune: elRegion.value,
+      delivery_method: elDelivery.value,
+      items: items.map(function (it) {
+        return { product_id: it.product_id, product_name: it.product_name, quantity: it.quantity, price: it.price };
+      }),
+      delivery_fee: fee,
+      total_amount: subtotal + fee,
+      status: 'new'
+    }).then(function (res) {
+      if (res.error) {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Acquisition';
+        return fail(res.error.message);
+      }
+      Cart.clear();
+      $('order-form').classList.add('hidden');
+      $('confirmation').classList.remove('hidden');
+      $('confirmation-ref').textContent = 'Placed for ' + name + ' — ' + elRegion.value + ', ' + elState.value;
+      $('confirmation').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+
+  // ------------------------------------------------------------------- boot
+  renderSummary();
+  OLEVS.loadFees().then(function (f) {
+    fees = f;
+    if (!f) {
+      fail('Delivery fees could not be loaded, so the total cannot be calculated. Please reload the page.');
+      $('confirm-btn').disabled = true;
+    }
+    // Reflect the fee difference in the option labels, read from the database.
+    if (f) {
+      elDelivery.options[1].textContent = f.office.label + ' — ' + fmtDA(f.office.fee);
+      elDelivery.options[2].textContent = f.home.label + ' — ' + fmtDA(f.home.fee);
+    }
+    recalc();
+  });
+})();
+</script>
+</body></html>

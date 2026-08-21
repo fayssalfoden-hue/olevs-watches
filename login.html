@@ -1,0 +1,138 @@
+<!DOCTYPE html><html class="h-full" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AETERNUS Atelier - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Libre+Caslon+Text:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config" src="assets/theme.js"></script>
+<style>
+        /* Minimal micro-shadows as per style guidance */
+        .glass-card {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        }
+
+        /* Subtle radial gradient background */
+        .bg-radial-luxury {
+            background: radial-gradient(circle at center, rgba(197, 163, 101, 0.08) 0%, transparent 60%), var(--tw-bg-surface-container-low, #f5f3f3);
+        }
+
+        /* Material Symbols Fill Configuration */
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="h-full bg-surface-container-low text-on-surface antialiased flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+<!-- Main Content Canvas (No Nav/Footer as requested for transactional/focused intent) -->
+<main class="w-full max-w-md mx-auto">
+<div class="glass-card bg-surface p-8 md:p-12 border border-outline-variant rounded-lg text-center relative overflow-hidden flex flex-col gap-8">
+<!-- Branding Header -->
+<div class="flex flex-col items-center gap-4">
+<img alt="OLEVS Logo" class="w-40 h-40 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcSzIKXEjy1ekN6_XY_6b-fgnCMSF_utdmpkIy-qE0hhcHG3Yg0eotSv7hZpDsPgEiIBE5lS8Ch8F7Mwf0HA-VNC9ziEVR7QrCc_HcKKF6mZNKajfx4oNwietdFb2t4RnUgiH3zGix0Ma32d-dlDKQqMMsNMVG-06Ii7rVVjYFmwOBJ68zPK9DXD1w20E6iXZERI4Fy3r6-UHZ2HfihsUN4wYozolofkihf_mA1KPhFcChsoYWCx9PWRVnKKk8Jv2MXg">
+<div class="flex flex-col gap-1">
+
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Atelier Login</p>
+</div>
+</div>
+<!-- Login Form -->
+<form class="flex flex-col gap-6 text-left w-full mt-4" id="login-form" novalidate>
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="email">Email</label>
+<input class="w-full bg-transparent border-0 border-b border-primary-container text-on-surface font-body-md text-body-md focus:ring-0 focus:border-primary transition-colors py-2 px-0 placeholder:text-outline" id="email" name="email" placeholder="atelier@aeternus.com" required="" type="email" autocomplete="username">
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase flex justify-between" for="password">
+                        Password
+                    </label>
+<div class="relative w-full">
+<input class="w-full bg-transparent border-0 border-b border-primary-container text-on-surface font-body-md text-body-md focus:ring-0 focus:border-primary transition-colors py-2 px-0 placeholder:text-outline pr-10" id="password" name="password" placeholder="••••••••" required="" type="password" autocomplete="current-password">
+<button aria-label="Toggle password visibility" class="absolute right-0 top-1/2 -translate-y-1/2 text-primary focus:outline-none" type="button" id="toggle-password">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Inline error. Occupies no space until there is something to say. -->
+<p id="login-error" class="hidden font-body-md text-body-md text-error text-sm"></p>
+<!-- Actions -->
+<div class="flex flex-col gap-4 mt-6">
+<button class="w-full py-4 border border-primary text-primary font-label-caps text-label-caps uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 flex justify-center items-center gap-2 group disabled:opacity-50" type="submit" id="login-btn">
+                        Log In
+                        <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform duration-300" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<a class="text-center font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors text-sm" href="#" id="forgot">
+                        Forgot Password?
+                    </a>
+</div>
+</form>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var err = $('login-error');
+
+  function showError(msg) {
+    err.textContent = msg;
+    err.classList.remove('hidden');
+  }
+  function clearError() { err.classList.add('hidden'); }
+
+  // Already signed in? Go straight through.
+  OLEVS.Auth.session().then(function (s) {
+    if (s) window.location.replace('dashboard.html');
+  });
+
+  $('toggle-password').addEventListener('click', function () {
+    var p = $('password');
+    var icon = this.querySelector('span');
+    var hidden = p.type === 'password';
+    p.type = hidden ? 'text' : 'password';
+    icon.textContent = hidden ? 'visibility_off' : 'visibility';
+  });
+
+  $('login-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    clearError();
+    var email = $('email').value.trim();
+    var password = $('password').value;
+
+    if (!email || !password) return showError('Please enter both your email and password.');
+
+    var btn = $('login-btn');
+    btn.disabled = true;
+
+    OLEVS.sb.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
+      btn.disabled = false;
+      if (res.error) {
+        /* Deliberately one message for a wrong email and a wrong password: telling
+           an unauthenticated visitor which half they got right confirms whether an
+           account exists. And no navigation happens — the page stays put. */
+        return showError('Those credentials were not recognised. Please try again.');
+      }
+      window.location.replace('dashboard.html');
+    });
+  });
+
+  $('forgot').addEventListener('click', function (ev) {
+    ev.preventDefault();
+    clearError();
+    var email = $('email').value.trim();
+    if (!email) return showError('Enter your email address above, then click Forgot Password.');
+    OLEVS.sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href }).then(function () {
+      err.classList.remove('hidden');
+      err.classList.remove('text-error');
+      err.classList.add('text-primary');
+      err.textContent = 'If that address has an account, a reset link is on its way.';
+    });
+  });
+})();
+</script>
+</body></html>

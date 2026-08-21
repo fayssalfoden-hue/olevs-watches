@@ -1,0 +1,582 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>OLEVS - Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config" src="assets/theme.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .lux-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid theme('colors.primary-container');
+            padding: theme('spacing.unit') 0;
+            color: theme('colors.on-surface');
+            outline: none;
+            border-radius: 0;
+        }
+        .lux-field:focus { border-bottom-width: 2px; border-color: theme('colors.primary'); }
+</style>
+</head>
+<!-- The body starts hidden. Nothing owner-only is painted until the session check
+     in the boot script has resolved; a visitor without one is redirected to the
+     login page before any of this markup becomes visible. -->
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-x-hidden min-h-screen flex invisible" id="app">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container-low dark:bg-inverse-surface docked left-0 h-screen w-64 border-r border-outline-variant flat no shadows hidden lg:flex flex-col h-full py-8 fixed top-0 z-40">
+<!-- Header -->
+<div class="px-8 mb-12 flex flex-col items-start gap-4">
+<div class="w-16 h-16 rounded-full overflow-hidden border border-primary-container bg-white">
+<img alt="OLEVS Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNBvokGsNTF7yLunwfRuW6pE8TjWcHphBL0XpwQyZwIy7isxxrhnGEUb0VbYnzmwA86J74otnP4vkn5r0VAQiduk9JUDXxYdWj7WC9zS2duGM10wKD1Gv7Ms4GCciUedqPnefF08XBKnmKc1x_WmUqeLBOHhGI7ar43qAlTLtkTql_jwES1wF3v-EctXRLKwvDqmVe6IqBIdi3sNSnrtPgQTGj8OwChwdc04nLe8gJch-DyvGxUhjX2mPiOktY2l6PQw">
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary">OLEVS Dashboard</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">Managing Excellence</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex flex-col flex-grow gap-2 mt-8">
+<li class="">
+<a class="flex items-center gap-4 py-3 font-label-caps text-label-caps text-primary font-bold border-l-2 border-primary pl-4 bg-primary-container/10" href="#" data-section="products">
+<span class="material-symbols-outlined" data-icon="watch">watch</span>
+                    Products
+                </a>
+</li>
+<li class="">
+<a class="flex items-center gap-4 py-3 font-label-caps text-label-caps text-on-secondary-fixed-variant pl-4 hover:bg-primary-container/10 transition-all" href="#" data-section="orders">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                    Orders
+                </a>
+</li>
+</ul>
+<!-- Footer Links -->
+<ul class="flex flex-col gap-2 mt-auto">
+<li class="">
+<a class="flex items-center gap-4 py-3 font-label-caps text-label-caps text-on-secondary-fixed-variant pl-4 hover:bg-primary-container/10 transition-all" href="#" data-section="settings">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</li>
+<li class="">
+<a class="flex items-center gap-4 py-3 font-label-caps text-label-caps text-on-secondary-fixed-variant pl-4 hover:bg-primary-container/10 transition-all" href="#" id="sign-out">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Sign Out
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow lg:ml-64 p-margin-desktop bg-surface min-h-screen">
+<!-- Mobile section switcher: the sidebar is hidden below lg in the design. -->
+<div class="lg:hidden flex gap-6 mb-8 border-b border-outline-variant/30 pb-4">
+  <a href="#" data-section="products" class="font-label-caps text-label-caps text-primary uppercase">Products</a>
+  <a href="#" data-section="orders" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Orders</a>
+  <a href="#" data-section="settings" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Settings</a>
+  <a href="#" id="sign-out-mobile" class="font-label-caps text-label-caps text-on-surface-variant uppercase ml-auto">Sign Out</a>
+</div>
+
+<!-- Top Bar / Page Header -->
+<header class="flex justify-between items-end mb-16 border-b border-outline-variant/30 pb-6">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background" id="page-title">Inventory</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2" id="page-subtitle">Manage your horological masterpieces.</p>
+</div>
+<button class="border border-primary-container text-primary font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 flex items-center gap-2" id="add-product-btn">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Add New Product
+            </button>
+</header>
+
+<!-- ============================== PRODUCTS ============================== -->
+<section id="section-products">
+<div class="w-full">
+<!-- Table Header -->
+<div class="grid gap-gutter border-b border-outline-variant/50 pb-4 mb-4 font-label-caps text-label-caps text-on-surface-variant uppercase grid-cols-13">
+<div class="col-span-1">Image</div>
+<div class="col-span-4">Product Name</div>
+<div class="col-span-3">Description</div>
+<div class="col-span-2 text-right">Price (DA)</div>
+<div class="col-span-2 text-right">Stock</div>
+<div class="col-span-1 text-right">Actions</div></div>
+<!-- Table Rows -->
+<div class="flex flex-col gap-6" id="product-rows"></div>
+<p class="font-body-md text-on-surface-variant py-12" id="products-status">Loading inventory…</p>
+</div>
+</section>
+
+<!-- =============================== ORDERS =============================== -->
+<section id="section-orders" class="hidden">
+<div class="grid grid-cols-12 gap-gutter" id="order-cards"></div>
+<p class="font-body-md text-on-surface-variant py-12" id="orders-status">Loading orders…</p>
+</section>
+
+<!-- ============================== SETTINGS ============================== -->
+<section id="section-settings" class="hidden max-w-2xl flex flex-col gap-section-gap">
+  <div class="flex flex-col gap-8">
+    <h3 class="font-headline-lg text-headline-lg text-on-background border-b border-outline-variant/30 pb-4">Change Password</h3>
+    <p class="font-body-md text-on-surface-variant -mt-4">Your current password is required, so that an unattended open session cannot be used to lock you out of your own shop.</p>
+    <form class="flex flex-col gap-8" id="password-form" novalidate>
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="current-password">Current Password</label>
+        <input class="lux-field" id="current-password" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="new-password">New Password</label>
+        <input class="lux-field" id="new-password" type="password" autocomplete="new-password" minlength="8" required>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="confirm-password">Confirm New Password</label>
+        <input class="lux-field" id="confirm-password" type="password" autocomplete="new-password" required>
+      </div>
+      <p class="hidden font-body-md text-sm" id="password-msg"></p>
+      <button type="submit" class="self-start border border-primary text-primary font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 disabled:opacity-50">Update Password</button>
+    </form>
+  </div>
+
+  <div class="flex flex-col gap-8">
+    <h3 class="font-headline-lg text-headline-lg text-on-background border-b border-outline-variant/30 pb-4">Change Email</h3>
+    <p class="font-body-md text-on-surface-variant -mt-4">Signed in as <span class="text-primary" id="current-email">…</span>. A confirmation link is sent to the new address; the change only takes effect once you follow it, so the old address keeps working until then.</p>
+    <form class="flex flex-col gap-8" id="email-form" novalidate>
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="new-email">New Email Address</label>
+        <input class="lux-field" id="new-email" type="email" autocomplete="email" required>
+      </div>
+      <p class="hidden font-body-md text-sm" id="email-msg"></p>
+      <button type="submit" class="self-start border border-primary text-primary font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 disabled:opacity-50">Send Confirmation</button>
+    </form>
+  </div>
+
+  <div class="flex flex-col gap-8">
+    <h3 class="font-headline-lg text-headline-lg text-on-background border-b border-outline-variant/30 pb-4">Delivery Fees</h3>
+    <p class="font-body-md text-on-surface-variant -mt-4">The database refuses any change that does not keep home delivery above office pickup.</p>
+    <form class="flex flex-col md:flex-row gap-8 items-end" id="fees-form" novalidate>
+      <div class="flex flex-col gap-2 flex-grow">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="fee-office">Office / Stopdesk (DA)</label>
+        <input class="lux-field" id="fee-office" type="number" min="0" step="10" required>
+      </div>
+      <div class="flex flex-col gap-2 flex-grow">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="fee-home">Home Delivery (DA)</label>
+        <input class="lux-field" id="fee-home" type="number" min="0" step="10" required>
+      </div>
+      <button type="submit" class="border border-primary text-primary font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 shrink-0">Save Fees</button>
+    </form>
+    <p class="hidden font-body-md text-sm" id="fees-msg"></p>
+  </div>
+</section>
+</main>
+
+<!-- ===================== Add / Edit product dialog ====================== -->
+<div id="product-modal" class="fixed inset-0 z-[80] hidden items-center justify-center p-margin-mobile bg-inverse-surface/40 backdrop-blur-[2px]">
+  <div class="bg-surface border border-primary/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 md:p-12 flex flex-col gap-8">
+    <div class="flex justify-between items-start">
+      <h3 class="font-headline-lg text-headline-lg text-on-background" id="modal-title">Add New Product</h3>
+      <button id="modal-close" aria-label="Close" class="text-primary hover:opacity-70"><span class="material-symbols-outlined text-3xl">close</span></button>
+    </div>
+    <form class="flex flex-col gap-8" id="product-form" novalidate>
+      <input type="hidden" id="product-id">
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="p-name">Name</label>
+        <input class="lux-field" id="p-name" type="text" required>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="flex flex-col gap-2">
+          <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="p-price">Price (DA)</label>
+          <input class="lux-field" id="p-price" type="number" min="0" step="100" required>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="p-stock">Stock Quantity</label>
+          <input class="lux-field" id="p-stock" type="number" min="0" step="1" required>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="p-description">Description</label>
+        <textarea class="lux-field resize-y" id="p-description" rows="3"></textarea>
+      </div>
+      <div class="flex flex-col gap-3">
+        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="p-image">Product Image</label>
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 bg-surface-container border border-outline-variant/30 flex items-center justify-center overflow-hidden shrink-0">
+            <img id="p-image-preview" alt="" class="max-w-full max-h-full object-contain">
+          </div>
+          <div class="flex flex-col gap-2 flex-grow">
+            <input type="file" id="p-image" accept="image/*" class="font-body-md text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:border file:border-primary file:bg-transparent file:text-primary file:font-label-caps file:text-label-caps file:uppercase file:cursor-pointer hover:file:bg-[#F2EADA]">
+            <p class="font-body-md text-xs text-outline">Leave empty to keep the current image.</p>
+          </div>
+        </div>
+      </div>
+      <p class="hidden font-body-md text-sm" id="modal-msg"></p>
+      <div class="flex gap-4 justify-end pt-4 border-t border-outline-variant/30">
+        <button type="button" id="modal-cancel" class="font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">Cancel</button>
+        <button type="submit" id="modal-save" class="border border-primary text-primary font-label-caps text-label-caps px-8 py-4 uppercase tracking-widest hover:bg-[#F2EADA] transition-colors duration-300 disabled:opacity-50">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function () {
+  'use strict';
+  var sb = OLEVS.sb, fmtDA = OLEVS.fmtDA, esc = OLEVS.escapeHtml, CFG = window.OLEVS_CONFIG;
+  var $ = function (id) { return document.getElementById(id); };
+  var products = [];
+
+  // ------------------------------------------------------------- auth guard
+  // Nothing below runs, and the body stays invisible, without a session.
+  OLEVS.Auth.requireOwner('login.html').then(function (session) {
+    if (!session) return;
+    $('app').classList.remove('invisible');
+    $('current-email').textContent = session.user.email;
+    loadProducts();
+    loadOrders();
+    loadFees();
+  });
+
+  function signOut(ev) {
+    ev.preventDefault();
+    OLEVS.Auth.signOut().then(function () { window.location.replace('login.html'); });
+  }
+  $('sign-out').addEventListener('click', signOut);
+  $('sign-out-mobile').addEventListener('click', signOut);
+
+  // ----------------------------------------------------------- section swap
+  var TITLES = {
+    products: ['Inventory', 'Manage your horological masterpieces.'],
+    orders:   ['Orders', 'Every order placed, newest first.'],
+    settings: ['Settings', 'Your account and shop configuration.']
+  };
+
+  function show(section) {
+    ['products', 'orders', 'settings'].forEach(function (s) {
+      $('section-' + s).classList.toggle('hidden', s !== section);
+    });
+    $('page-title').textContent = TITLES[section][0];
+    $('page-subtitle').textContent = TITLES[section][1];
+    $('add-product-btn').classList.toggle('hidden', section !== 'products');
+
+    document.querySelectorAll('nav [data-section]').forEach(function (a) {
+      var on = a.getAttribute('data-section') === section;
+      a.className = on
+        ? 'flex items-center gap-4 py-3 font-label-caps text-label-caps text-primary font-bold border-l-2 border-primary pl-4 bg-primary-container/10'
+        : 'flex items-center gap-4 py-3 font-label-caps text-label-caps text-on-secondary-fixed-variant pl-4 hover:bg-primary-container/10 transition-all';
+    });
+    document.querySelectorAll('main [data-section]').forEach(function (a) {
+      var on = a.getAttribute('data-section') === section;
+      a.className = 'font-label-caps text-label-caps uppercase ' + (on ? 'text-primary' : 'text-on-surface-variant');
+    });
+  }
+  document.querySelectorAll('[data-section]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); show(a.getAttribute('data-section')); });
+  });
+
+  // ============================== PRODUCTS ==============================
+  function stockPill(n) {
+    // Zero stock is the one state worth colouring: it is the difference between
+    // a product customers can see and one they cannot.
+    var dot = n > 0 ? 'bg-primary-container' : 'bg-error';
+    var text = n > 0 ? 'text-on-background' : 'text-error';
+    return '<span class="inline-flex items-center gap-1.5 px-3 py-1 border border-outline-variant/50 rounded-full font-label-caps text-label-caps ' + text + '">' +
+           '<span class="w-2 h-2 rounded-full ' + dot + '"></span>' + n + ' Units</span>';
+  }
+
+  function rowHtml(p) {
+    return '<div class="grid gap-gutter items-center border-b border-outline-variant/20 pb-6 hover:bg-surface-container-low transition-colors px-2 -mx-2 rounded-lg grid-cols-13">' +
+      '<div class="col-span-1">' +
+        '<div class="w-16 h-16 bg-surface-container border border-outline-variant/30 flex items-center justify-center p-1">' +
+          '<img alt="Product Image" class="max-w-full max-h-full object-contain" src="' + esc(OLEVS.imgFor(p)) + '">' +
+        '</div>' +
+      '</div>' +
+      '<div class="col-span-4">' +
+        '<h3 class="font-headline-md text-headline-md text-on-background">' + esc(p.name) + '</h3>' +
+        '<p class="font-body-md text-body-md text-on-surface-variant">Ref. ' + esc(String(p.id).slice(0, 8).toUpperCase()) + '</p>' +
+      '</div>' +
+      '<div class="col-span-3 font-body-md text-body-md text-on-background">' + esc(p.description || '—') + '</div>' +
+      '<div class="col-span-2 text-right font-price-display text-price-display text-primary">' + fmtDA(p.price) + '</div>' +
+      '<div class="col-span-2 text-right">' + stockPill(Number(p.stock_quantity)) + '</div>' +
+      '<div class="col-span-1 flex justify-end relative group/menu">' +
+        '<button class="p-2 hover:bg-primary-container/10 rounded-full transition-colors text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>' +
+        '<div class="absolute right-0 top-full mt-1 w-48 bg-surface-container-lowest border border-outline-variant/30 rounded-lg shadow-lg hidden group-hover/menu:block z-50 overflow-hidden">' +
+          '<button data-edit="' + esc(p.id) + '" class="w-full text-left px-4 py-3 font-label-caps text-label-caps text-on-surface hover:bg-primary-container/10 transition-colors flex items-center gap-2">' +
+            '<span class="material-symbols-outlined text-primary" style="font-size: 18px">edit</span>Edit</button>' +
+          '<button data-delete="' + esc(p.id) + '" class="w-full text-left px-4 py-3 font-label-caps text-label-caps text-error hover:bg-error/5 transition-colors flex items-center gap-2 border-t border-outline-variant/10">' +
+            '<span class="material-symbols-outlined" style="font-size: 18px">delete</span>Delete</button>' +
+        '</div>' +
+      '</div></div>';
+  }
+
+  function loadProducts() {
+    return sb.from(CFG.TABLE_PRODUCTS).select('*').order('created_at', { ascending: true }).then(function (r) {
+      var s = $('products-status');
+      if (r.error) { s.textContent = 'Inventory could not be loaded: ' + r.error.message; return; }
+      products = r.data || [];
+      $('product-rows').innerHTML = products.map(rowHtml).join('');
+      s.classList.toggle('hidden', products.length > 0);
+      if (!products.length) s.textContent = 'No products yet. Use “Add New Product” to list your first piece.';
+    });
+  }
+
+  $('product-rows').addEventListener('click', function (e) {
+    var ed = e.target.closest('[data-edit]'), del = e.target.closest('[data-delete]');
+    if (ed) openModal(products.filter(function (p) { return p.id === ed.getAttribute('data-edit'); })[0]);
+    else if (del) deleteProduct(del.getAttribute('data-delete'));
+  });
+
+  function deleteProduct(id) {
+    var p = products.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    if (!window.confirm('Delete “' + p.name + '” permanently? This cannot be undone.')) return;
+    sb.from(CFG.TABLE_PRODUCTS).delete().eq('id', id).then(function (r) {
+      if (r.error) return window.alert('Could not delete: ' + r.error.message);
+      loadProducts();
+    });
+  }
+
+  // ------------------------------------------------------------ modal + save
+  var modal = $('product-modal');
+  function openModal(p) {
+    $('modal-msg').classList.add('hidden');
+    $('product-form').reset();
+    $('modal-title').textContent = p ? 'Edit Product' : 'Add New Product';
+    $('product-id').value = p ? p.id : '';
+    $('p-name').value = p ? p.name : '';
+    $('p-price').value = p ? p.price : '';
+    $('p-stock').value = p ? p.stock_quantity : 0;
+    $('p-description').value = p ? (p.description || '') : '';
+    $('p-image-preview').src = OLEVS.imgFor(p);
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+
+  $('add-product-btn').addEventListener('click', function () { openModal(null); });
+  $('modal-close').addEventListener('click', closeModal);
+  $('modal-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+
+  $('p-image').addEventListener('change', function () {
+    var f = this.files && this.files[0];
+    if (f) $('p-image-preview').src = URL.createObjectURL(f);
+  });
+
+  function msg(el, text, ok) {
+    el.textContent = text;
+    el.className = 'font-body-md text-sm ' + (ok ? 'text-primary' : 'text-error');
+  }
+
+  $('product-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var el = $('modal-msg');
+    var name = $('p-name').value.trim();
+    var price = Number($('p-price').value);
+    var stock = parseInt($('p-stock').value, 10);
+
+    if (!name) return msg(el, 'A product needs a name.', false);
+    if (!isFinite(price) || price < 0) return msg(el, 'Enter a price of zero or more.', false);
+    if (!isFinite(stock) || stock < 0) return msg(el, 'Enter a stock quantity of zero or more.', false);
+
+    var btn = $('modal-save');
+    btn.disabled = true;
+    msg(el, 'Saving…', true);
+
+    var id = $('product-id').value;
+    var file = $('p-image').files && $('p-image').files[0];
+
+    uploadIfAny(file).then(function (url) {
+      var row = { name: name, price: price, stock_quantity: stock, description: $('p-description').value.trim() || null };
+      // Only overwrite image_url when a new file was actually chosen, so an edit
+      // that touches only the price cannot blank the existing photograph.
+      if (url) row.image_url = url;
+      var q = id
+        ? sb.from(CFG.TABLE_PRODUCTS).update(row).eq('id', id)
+        : sb.from(CFG.TABLE_PRODUCTS).insert(row);
+      return q;
+    }).then(function (r) {
+      btn.disabled = false;
+      if (r && r.error) return msg(el, r.error.message, false);
+      closeModal();
+      loadProducts();
+    }).catch(function (e) {
+      btn.disabled = false;
+      msg(el, String(e.message || e), false);
+    });
+  });
+
+  function uploadIfAny(file) {
+    if (!file) return Promise.resolve(null);
+    var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    var path = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    return sb.storage.from(CFG.BUCKET).upload(path, file, { cacheControl: '3600', upsert: false })
+      .then(function (r) {
+        if (r.error) throw new Error('Image upload failed: ' + r.error.message);
+        return sb.storage.from(CFG.BUCKET).getPublicUrl(path).data.publicUrl;
+      });
+  }
+
+  // =============================== ORDERS ===============================
+  var STATUSES = ['new', 'confirmed', 'shipped'];
+
+  function statusBadge(s) {
+    var on = s === 'new';
+    return '<span class="px-3 py-1 border font-label-caps text-label-caps uppercase ' +
+      (on ? 'border-primary-container text-primary bg-primary-container/5' : 'border-outline-variant text-on-surface-variant') +
+      '">' + esc(s) + '</span>';
+  }
+
+  function orderCard(o) {
+    var items = Array.isArray(o.items) ? o.items : [];
+    var lines = items.map(function (it) {
+      return '<div class="flex justify-between font-body-md text-body-md text-on-background">' +
+        '<span>' + esc(it.product_name) + ' × ' + it.quantity + '</span>' +
+        '<span class="text-on-surface-variant">' + fmtDA(it.price * it.quantity) + '</span></div>';
+    }).join('');
+
+    var options = STATUSES.map(function (s) {
+      return '<option value="' + s + '"' + (s === o.status ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+
+    return '<div class="col-span-12 md:col-span-6 lg:col-span-4 border border-outline-variant/50 p-6 flex flex-col gap-4 relative overflow-hidden group hover:border-primary-container transition-colors">' +
+      (o.status === 'new' ? '<div class="absolute top-0 left-0 w-full h-1 bg-primary-container/20 group-hover:bg-primary-container transition-colors"></div>' : '') +
+      '<div class="flex justify-between items-start">' +
+        '<div>' +
+          '<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Order #' + esc(String(o.id).slice(0, 8).toUpperCase()) + '</p>' +
+          '<h4 class="font-headline-md text-headline-md text-on-background">' + esc(o.customer_name) + '</h4>' +
+        '</div>' + statusBadge(o.status) +
+      '</div>' +
+      '<div class="space-y-2 mt-4">' +
+        '<div class="flex items-center gap-2 font-body-md text-body-md text-on-background">' +
+          '<span class="material-symbols-outlined text-outline" data-icon="call">call</span>' + esc(o.phone) + '</div>' +
+        '<div class="flex items-center gap-2 font-body-md text-body-md text-on-background">' +
+          '<span class="material-symbols-outlined text-outline" data-icon="location_on">location_on</span>' +
+          esc(o.commune) + ', ' + esc(o.wilaya) + '</div>' +
+        '<div class="flex items-center gap-2 font-body-md text-body-md text-on-background">' +
+          '<span class="material-symbols-outlined text-outline" data-icon="local_shipping">local_shipping</span>' +
+          (o.delivery_method === 'home' ? 'Home Delivery' : 'Office / Stopdesk Pickup') + '</div>' +
+      '</div>' +
+      '<div class="mt-4 pt-4 border-t border-outline-variant/30 flex flex-col gap-2">' + lines +
+        '<div class="flex justify-between font-body-md text-body-md text-on-surface-variant"><span>Delivery</span><span>' + fmtDA(o.delivery_fee) + '</span></div>' +
+        '<div class="flex justify-between items-center pt-2 border-t border-primary/30 mt-2">' +
+          '<span class="font-label-caps text-label-caps uppercase tracking-widest">Total</span>' +
+          '<span class="font-price-display text-price-display text-primary">' + fmtDA(o.total_amount) + '</span></div>' +
+      '</div>' +
+      '<div class="mt-4 flex items-center gap-3">' +
+        '<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Status</label>' +
+        '<select data-status-for="' + esc(o.id) + '" class="lux-field flex-grow font-label-caps text-label-caps uppercase cursor-pointer">' + options + '</select>' +
+      '</div></div>';
+  }
+
+  function loadOrders() {
+    return sb.from(CFG.TABLE_ORDERS).select('*').order('created_at', { ascending: false }).then(function (r) {
+      var s = $('orders-status');
+      if (r.error) { s.textContent = 'Orders could not be loaded: ' + r.error.message; return; }
+      var rows = r.data || [];
+      $('order-cards').innerHTML = rows.map(orderCard).join('');
+      s.classList.toggle('hidden', rows.length > 0);
+      if (!rows.length) s.textContent = 'No orders yet.';
+    });
+  }
+
+  $('order-cards').addEventListener('change', function (e) {
+    var sel = e.target.closest('[data-status-for]');
+    if (!sel) return;
+    var id = sel.getAttribute('data-status-for');
+    var prev = sel.getAttribute('data-prev') || '';
+    sel.disabled = true;
+    sb.from(CFG.TABLE_ORDERS).update({ status: sel.value }).eq('id', id).then(function (r) {
+      sel.disabled = false;
+      if (r.error) {
+        window.alert('Could not update the status: ' + r.error.message);
+        if (prev) sel.value = prev;
+        return;
+      }
+      loadOrders();
+    });
+  });
+
+  // ============================== SETTINGS ==============================
+  $('password-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var el = $('password-msg');
+    el.classList.remove('hidden');
+    var cur = $('current-password').value;
+    var next = $('new-password').value;
+    var conf = $('confirm-password').value;
+
+    if (next.length < 8) return msg(el, 'The new password must be at least 8 characters.', false);
+    if (next !== conf)   return msg(el, 'The two new passwords do not match.', false);
+    if (next === cur)    return msg(el, 'The new password is the same as the current one.', false);
+
+    var btn = ev.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    msg(el, 'Verifying your current password…', true);
+
+    /* Supabase's updateUser does not itself check the old password, so an open
+       session would be enough to change it. Re-authenticating first is what makes
+       "re-enter your current password" actually mean something. */
+    OLEVS.Auth.session().then(function (session) {
+      return sb.auth.signInWithPassword({ email: session.user.email, password: cur });
+    }).then(function (r) {
+      if (r.error) { btn.disabled = false; msg(el, 'Your current password is not correct.', false); return null; }
+      return sb.auth.updateUser({ password: next });
+    }).then(function (r) {
+      if (!r) return;
+      btn.disabled = false;
+      if (r.error) return msg(el, r.error.message, false);
+      $('password-form').reset();
+      msg(el, 'Your password has been updated.', true);
+    });
+  });
+
+  $('email-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var el = $('email-msg');
+    el.classList.remove('hidden');
+    var email = $('new-email').value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg(el, 'Enter a valid email address.', false);
+
+    var btn = ev.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    sb.auth.updateUser({ email: email }).then(function (r) {
+      btn.disabled = false;
+      if (r.error) return msg(el, r.error.message, false);
+      msg(el, 'A confirmation link has been sent to ' + email + '. The change takes effect once you follow it — until then your current address keeps working.', true);
+    });
+  });
+
+  function loadFees() {
+    return OLEVS.loadFees().then(function (f) {
+      if (!f) return;
+      $('fee-office').value = f.office.fee;
+      $('fee-home').value = f.home.fee;
+    });
+  }
+
+  $('fees-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var el = $('fees-msg');
+    el.classList.remove('hidden');
+    var office = Number($('fee-office').value), home = Number($('fee-home').value);
+    if (!isFinite(office) || office < 0 || !isFinite(home) || home < 0) return msg(el, 'Enter both fees as zero or more.', false);
+    if (home <= office) return msg(el, 'Home delivery must cost more than office pickup.', false);
+
+    msg(el, 'Saving…', true);
+    sb.from(CFG.TABLE_FEES).update({ fee: office }).eq('method', 'office').then(function (r) {
+      if (r.error) throw new Error(r.error.message);
+      return sb.from(CFG.TABLE_FEES).update({ fee: home }).eq('method', 'home');
+    }).then(function (r) {
+      if (r.error) throw new Error(r.error.message);
+      msg(el, 'Delivery fees updated.', true);
+    }).catch(function (e) { msg(el, String(e.message || e), false); });
+  });
+})();
+</script>
+</body></html>
