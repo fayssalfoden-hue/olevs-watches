@@ -162,10 +162,26 @@
     navIndicator.style.transform = 'translateX(' + target.offsetLeft + 'px)';
   }
 
+  /* While a click-driven smooth scroll is travelling, the page passes THROUGH
+     the intervening sections — so the scroll listener below would call
+     setActive('collection') on the way from Home to Contact and drag the rule
+     backwards mid-flight. This lock holds the destination until the page
+     actually arrives. It only became visible once the slide was shortened to
+     180ms; at 400ms the reversal was hidden inside the animation. */
+  var navLock = null, navLockTimer = null;
+  function lockNav(name) {
+    navLock = name;
+    clearTimeout(navLockTimer);
+    // Safety net: if the destination is never reached exactly (a short page
+    // that cannot scroll far enough), the lock must not stick forever.
+    navLockTimer = setTimeout(function () { navLock = null; }, 1200);
+  }
+
   document.querySelectorAll('[data-nav]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
       var target = a.getAttribute('data-nav');
+      lockNav(target);
       setActive(target);                       // the rule moves on the click...
       if (target === 'top') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -193,7 +209,16 @@
   window.addEventListener('scroll', function () {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(function () { setActive(sectionInView()); ticking = false; });
+    requestAnimationFrame(function () {
+      ticking = false;
+      var inView = sectionInView();
+      if (navLock) {
+        // Still in transit. Release the lock only once the page has arrived.
+        if (inView === navLock) { navLock = null; clearTimeout(navLockTimer); }
+        return;
+      }
+      setActive(inView);
+    });
   }, { passive: true });
 
   window.addEventListener('resize', function () { setActive(sectionInView()); });
