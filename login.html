@@ -112,10 +112,19 @@
     OLEVS.sb.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
       btn.disabled = false;
       if (res.error) {
-        /* Deliberately one message for a wrong email and a wrong password: telling
-           an unauthenticated visitor which half they got right confirms whether an
-           account exists. And no navigation happens — the page stays put. */
-        return showError('Those credentials were not recognised. Please try again.');
+        /* Two different failures that must not wear the same message.
+           A rejected password is the user's problem and gets one deliberately
+           vague line — telling an unauthenticated visitor whether the email
+           exists confirms an account for them.
+           Anything else (the auth service 500ing, the network being down) is
+           NOT a credential problem, and reporting it as one sends the owner off
+           retyping a password that was right all along. */
+        var status = res.error.status || 0;
+        if (status === 400 || status === 401) {
+          return showError('Those credentials were not recognised. Please try again.');
+        }
+        return showError('Sign-in is unavailable right now (' + (status || 'network') + ': ' +
+                         res.error.message + '). Your password is not the problem — please try again shortly.');
       }
       window.location.replace('dashboard.html');
     });

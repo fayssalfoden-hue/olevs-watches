@@ -166,7 +166,7 @@
   function loadProducts() {
     OLEVS.sb.from(OLEVS_CONFIG.TABLE_PRODUCTS)
       .select('id,name,price,description,image_url,stock_quantity')
-      .order('created_at', { ascending: true })
+      .order('created_at', { ascending: true }).order('id', { ascending: true })
       .then(function (res) {
         if (res.error) {
           status.textContent = 'The collection could not be loaded: ' + res.error.message;

@@ -315,7 +315,7 @@
   }
 
   function loadProducts() {
-    return sb.from(CFG.TABLE_PRODUCTS).select('*').order('created_at', { ascending: true }).then(function (r) {
+    return sb.from(CFG.TABLE_PRODUCTS).select('*').order('created_at', { ascending: true }).order('id', { ascending: true }).then(function (r) {
       var s = $('products-status');
       if (r.error) { s.textContent = 'Inventory could not be loaded: ' + r.error.message; return; }
       products = r.data || [];
@@ -475,7 +475,7 @@
   }
 
   function loadOrders() {
-    return sb.from(CFG.TABLE_ORDERS).select('*').order('created_at', { ascending: false }).then(function (r) {
+    return sb.from(CFG.TABLE_ORDERS).select('*').order('created_at', { ascending: false }).order('id', { ascending: false }).then(function (r) {
       var s = $('orders-status');
       if (r.error) { s.textContent = 'Orders could not be loaded: ' + r.error.message; return; }
       var rows = r.data || [];
